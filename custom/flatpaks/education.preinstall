@@ -1,0 +1,26 @@
+# Education / homeschool Flatpak applications
+# Installed after first boot, requires internet
+# Format: [Flatpak Preinstall <APP_ID>] / Branch=stable
+#
+# Candidates to consider (verify each ID at https://flathub.org first):
+#
+# [Flatpak Preinstall org.kde.gcompris]    # GCompris — early learning suite (ages 2-10)
+# Branch=stable
+#
+# [Flatpak Preinstall org.tuxfamily.TuxMath]  # TuxMath — arcade math drills
+# Branch=stable
+#
+# [Flatpak Preinstall org.stellarium.Stellarium]  # Stellarium — planetarium
+# Branch=stable
+#
+# [Flatpak Preinstall org.kde.kalzium]     # Kalzium — periodic table
+# Branch=stable
+#
+# [Flatpak Preinstall org.inkscape.Inkscape]  # Inkscape — vector graphics for projects
+# Branch=stable
+#
+# [Flatpak Preinstall org.kde.krita]       # Krita — digital painting
+# Branch=stable
+#
+# [Flatpak Preinstall org.scratch.Scratch]  # Scratch — visual programming (if available)
+# Branch=stable
