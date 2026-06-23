@@ -16,8 +16,9 @@ AGENTS.md contains everything you need:
 
 **Commit attribution**:
 ```
-Assisted-by: Claude Sonnet 4.5 via Claude Code
+Assisted-by: Claude <Model Name> via Claude Code
 ```
+Substitute `<Model Name>` with the actual model running the session (e.g. `Sonnet 4.6`, `Opus 4.7`, `Haiku 4.5`).
 
 ---
 
