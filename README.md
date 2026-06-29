@@ -73,22 +73,36 @@ This image was bootstrapped from greatlem0n-os and intentionally **does not incl
 
 ## New for Family Use
 
+- **Cloudflare WARP** (Cloudflare One Client) installed and `warp-svc.service` enabled at boot for network-level filtering via Cloudflare Zero Trust Gateway (full tunnel + TLS decryption). One-time interactive enrollment per laptop; switch lock, auto-connect, and mode are enforced by the org's Device Settings Profile in the Zero Trust dashboard.
+- **Cloudflare Gateway root CA** installed into `/etc/pki/ca-trust/source/anchors/` so decrypted HTTPS doesn't trip browser certificate warnings.
 - `custom/brew/education.Brewfile` — placeholder for education CLI tools
 - `custom/flatpaks/education.preinstall` — placeholder with GCompris, Tux Math, Stellarium, etc. candidates
-- `custom/ujust/family.just` — `install-education` and `parental-controls` placeholders
+- `custom/ujust/family.just` — `install-education`, `parental-controls`, `warp-status`, `warp-enroll`
 
-## Parental Controls & Filtering (TODO)
+## Parental Controls & Filtering
 
-Approaches to evaluate:
-- **DNS-level filtering** — NextDNS or Pi-hole upstream (router or per-device)
-- **Application firewall** — opensnitch for per-app network prompts
+**Primary layer (network):** Cloudflare Zero Trust Gateway via WARP.
+
+After installing this image on a laptop, enroll it once:
+
+```bash
+ujust warp-enroll <your-team-name>
+# A browser opens — sign in to Cloudflare Access as a parent.
+# Device policy then enforces switch lock / mode / auto-connect.
+ujust warp-status   # confirm it's connected and policied
+```
+
+Filtering categories (adult, malware, etc.), per-policy bypasses, TLS inspection, and device lockout rules are all configured in the [Cloudflare Zero Trust dashboard](https://one.dash.cloudflare.com/), not in this image.
+
+**Future layers to evaluate (defense in depth):**
+- **Per-user app gating** — `malcontent` (GNOME Parental Controls) for app launching/browser content filtering (shipped in Bluefin base; not yet configured)
 - **Screen time** — gnome-screen-time (if/when stable) or third-party
 - **Per-kid accounts** — provision via cloud-init or first-boot script with restricted groups
 
 ## Roadmap
 
 - [ ] Pick and add education Flatpaks (GCompris, Stellarium, etc.)
-- [ ] Decide parental controls approach
+- [ ] Dry-run malcontent setup with a test user account
 - [ ] Replace lemon-themed branding (logos, fastfetch ANSI art) with eagle nest assets
 - [ ] Add per-kid user provisioning
 - [ ] Add screen-time tooling

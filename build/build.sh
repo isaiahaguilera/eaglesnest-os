@@ -40,6 +40,9 @@ echo "Starting build process..."
 # Package installation and removal
 /ctx/build/04-packages.sh
 
+# Cloudflare WARP client + Gateway CA cert trust
+/ctx/build/05-cloudflare-warp.sh
+
 ###############################################################################
 # Conditional Scripts (Examples)
 ###############################################################################

@@ -54,7 +54,7 @@ systemctl enable podman.socket
 # Example: systemctl mask unwanted-service
 
 # Note: SSH is intentionally NOT enabled on this family image.
-# Manage these laptops in person or via Tailscale tooling instead.
+# Manage these laptops in person; network policy is enforced via Cloudflare WARP.
 
 echo "::endgroup::"
 

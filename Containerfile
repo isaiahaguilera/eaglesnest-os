@@ -57,8 +57,11 @@ FROM ghcr.io/ublue-os/bluefin:stable@sha256:9f0201d21641133b15c5e58e6cf85008259e
 ##
 ## Uncomment the following line if one desires to make /opt immutable and be able to be used
 ## by the package manager.
+##
+## Required here because Cloudflare WARP (build/05-cloudflare-warp.sh) installs
+## into /opt/cloudflare-warp/, which RPM cannot extract into a symlinked /opt.
 
-# RUN rm /opt && mkdir /opt
+RUN rm /opt && mkdir /opt
 
 ### MODIFICATIONS
 ## make modifications desired in your image and install packages by modifying the build scripts
