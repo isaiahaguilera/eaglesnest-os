@@ -77,22 +77,15 @@ This image was bootstrapped from greatlem0n-os and intentionally **does not incl
 - **Cloudflare Gateway root CA** installed into `/etc/pki/ca-trust/source/anchors/` so decrypted HTTPS doesn't trip browser certificate warnings.
 - `custom/brew/education.Brewfile` — placeholder for education CLI tools
 - `custom/flatpaks/education.preinstall` — placeholder with GCompris, Tux Math, Stellarium, etc. candidates
-- `custom/ujust/family.just` — `install-education`, `parental-controls`, `warp-status`, `warp-enroll`
+- `custom/ujust/family.just` — `install-education`, `parental-controls`
 
 ## Parental Controls & Filtering
 
 **Primary layer (network):** Cloudflare Zero Trust Gateway via WARP.
 
-After installing this image on a laptop, enroll it once:
+After installing this image on a laptop, enroll it once via `warp-cli` (consult `warp-cli --help` for the current registration subcommand — Cloudflare renames it occasionally). A browser opens, the assigned user signs in to Cloudflare Access, and the device picks up its policy from the Zero Trust dashboard.
 
-```bash
-ujust warp-enroll <your-team-name>
-# A browser opens — sign in to Cloudflare Access as a parent.
-# Device policy then enforces switch lock / mode / auto-connect.
-ujust warp-status   # confirm it's connected and policied
-```
-
-Filtering categories (adult, malware, etc.), per-policy bypasses, TLS inspection, and device lockout rules are all configured in the [Cloudflare Zero Trust dashboard](https://one.dash.cloudflare.com/), not in this image.
+Filtering categories (adult, malware, etc.), per-policy bypasses, TLS inspection, switch lock, auto-connect, and device lockout rules are all configured in the [Cloudflare Zero Trust dashboard](https://one.dash.cloudflare.com/), not in this image.
 
 **Future layers to evaluate (defense in depth):**
 - **Per-user app gating** — `malcontent` (GNOME Parental Controls) for app launching/browser content filtering (shipped in Bluefin base; not yet configured)
