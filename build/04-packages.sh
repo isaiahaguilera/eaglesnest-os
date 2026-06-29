@@ -35,9 +35,6 @@ dnf5 install -y "${FEDORA_PACKAGES[@]}"
 # Install Packages from COPR Repositories
 ###############################################################################
 
-# Install ghostty from scottames/ghostty COPR
-copr_install_isolated "scottames/ghostty" ghostty
-
 # Example using COPR with isolated pattern:
 # copr_install_isolated "ublue-os/staging" package-name
 

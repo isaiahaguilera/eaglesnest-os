@@ -43,6 +43,9 @@ echo "Starting build process..."
 # Cloudflare WARP client + Gateway CA cert trust
 /ctx/build/05-cloudflare-warp.sh
 
+# Brave Browser (RPM) + enterprise policy + Flatpak preinstall trim
+/ctx/build/06-brave.sh
+
 ###############################################################################
 # Conditional Scripts (Examples)
 ###############################################################################

@@ -1,0 +1,21 @@
+{
+  "_comment": "Mandatory Brave/Chromium enterprise policy for eaglesnest-os family laptops. Anything in this file overrides user settings and cannot be changed from brave://settings. Policy reference: https://policy.brave.com/",
+
+  "TorDisabled": true,
+  "BraveRewardsDisabled": true,
+  "BraveWalletDisabled": true,
+  "BraveVPNDisabled": true,
+  "BraveAIChatEnabled": false,
+  "BraveP3AEnabled": false,
+  "BraveSyncDisabled": true,
+  "IPFSEnabled": false,
+  "WebTorrentDisabled": true,
+  "IncognitoModeAvailability": 1,
+
+  "DefaultSearchProviderEnabled": true,
+  "DefaultSearchProviderName": "Google",
+  "DefaultSearchProviderKeyword": "google.com",
+  "DefaultSearchProviderSearchURL": "https://www.google.com/search?q={searchTerms}",
+  "DefaultSearchProviderSuggestURL": "https://www.google.com/complete/search?output=chrome&q={searchTerms}",
+  "DefaultSearchProviderIconURL": "https://www.google.com/favicon.ico"
+}

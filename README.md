@@ -64,17 +64,25 @@ This image was bootstrapped from greatlem0n-os and intentionally **does not incl
 - Dev shell tools: tmux, keychain, stow
 - `configure-dev-groups`, `install-jetbrains-toolbox`, `toggle-sudo` ujust commands
 
+**Also removed for family fit:**
+- `ghostty` terminal (kids don't need a power-user terminal)
+- Flatpak Firefox, Flatpak Obsidian, Flatpak Brave entries from bluefin's default preinstall list (Firefox/Obsidian don't ship; Brave is installed as RPM instead — see below)
+
 **Kept (from greatlem0n-os):**
 - Bluefin :stable base, Tailscale client (no exit node), Homebrew default + fonts Brewfiles
-- ghostty terminal, gparted, zsh/fish/git/rclone
-- Firefox removal, fastfetch branding skeleton
+- gparted, zsh/fish/git/rclone
+- Firefox RPM removal, fastfetch branding skeleton
 - Container signature verification (cosign + sigstore policy)
-- Bluefin default Flatpak suite (GNOME apps, Brave, OnlyOffice, etc.)
+- Bluefin default Flatpak suite minus the entries called out above
 
 ## New for Family Use
 
 - **Cloudflare WARP** (Cloudflare One Client) installed and `warp-svc.service` enabled at boot for network-level filtering via Cloudflare Zero Trust Gateway (full tunnel + TLS decryption). One-time interactive enrollment per laptop; switch lock, auto-connect, and mode are enforced by the org's Device Settings Profile in the Zero Trust dashboard.
 - **Cloudflare Gateway root CA** installed into `/etc/pki/ca-trust/source/anchors/` so decrypted HTTPS doesn't trip browser certificate warnings.
+- **Brave Browser (RPM)** with mandatory enterprise policy at `/etc/brave/policies/managed/family.json`:
+  - Tor windows, Brave Rewards, Brave Wallet, Brave VPN, Brave AI Chat (Leo), Brave Sync, P3A telemetry, IPFS gateway, WebTorrent — all off
+  - Incognito mode disabled (private browsing hides local activity from spot-checks; WARP still logs the network side)
+  - Google set as the default and only search engine
 - `custom/brew/education.Brewfile` — placeholder for education CLI tools
 - `custom/flatpaks/education.preinstall` — placeholder with GCompris, Tux Math, Stellarium, etc. candidates
 - `custom/ujust/family.just` — `install-education`, `parental-controls`
