@@ -991,10 +991,57 @@ COPY --from=brew /ctx /
 
 ---
 
+## Maintainer Notes
+
+Project knowledge that agents need. Keep this in sync with any agent memory: when a memory is added or changed, mirror it here.
+
+### Purpose: Family / Homeschool Image
+
+eaglesnest-os runs on the maintainer's **kids' homeschool laptops**. The image is the supervision boundary, so it is intentionally minimal. It was bootstrapped on 2026-06-21 from the sibling [greatlem0n-os](https://github.com/isaiahaguilera/greatlem0n-os), the maintainer's daily-driver image.
+
+- **Family-fit gate**: before adding any package, tool, or system config, ask "Is this appropriate for a homeschooled kid's laptop?" If it leans toward dev, admin, or AI tooling, push back before adding it.
+- **Intentionally removed** (do not copy back from greatlem0n-os without explicit confirmation): SSH service, fail2ban, RDP polkit rules, udev wheel hardware-access rules, Tailscale exit node, cloudflared, VS Code, Claude Desktop, the dev Brewfile, AI editor extensions, `tmux`/`keychain`/`stow`, and the dev/admin ujust commands (`toggle-sudo`, `install-dev-tools`, etc.).
+- **Kept**: Tailscale *client* (remote management), default + fonts Brewfiles, Bluefin default Flatpaks, ghostty, gparted, zsh/fish/git/rclone, and container signature verification.
+- **Placeholders**: `custom/brew/education.Brewfile`, `custom/flatpaks/education.preinstall`, `custom/ujust/family.just`.
+- **Borrowing patterns**: when implementing something new (third-party repo, COPR, system_files config), check how greatlem0n-os does it first. The two repos keep separate cosign keys, GHCR images, and Renovate configs.
+
+### Working With the Maintainer
+
+- Answer questions first, before taking any action. Only start work once the maintainer confirms.
+- Confirm before committing and pushing.
+- Single branch (`main`). Prefer surgical, minimal changes. Test risky changes in a VM first; bootc rollback is the safety net.
+
+### Renovate & Merging
+
+- `.github/renovate.json5` auto-merges Bluefin base-image digests, **non-major** workflow updates (action pins, cosign patch/minor), and the `bootc-image-builder` digest in the `Justfile`, once the required "Build and push image" check passes. **Major** updates (e.g. runner `ubuntu` version, cosign major) stay manual.
+- The maintainer's `gh` token has no `workflow` scope. `gh pr merge` fails on a PR that edits `.github/workflows/*` if main changed that file after the PR branch was created. Workaround: tick the PR's rebase checkbox on the Dependency Dashboard issue (#3), run `gh workflow run Renovate`, wait for the rebased build, then merge. The Renovate GitHub App has workflow permission. Alternatively, the maintainer runs `gh auth refresh -s workflow`.
+- Direct pushes to `main` work for the maintainer: the branch ruleset requires the build check, but the admin role bypasses it.
+
+### Image Signing Is Live and Enforced
+
+Despite the template text in "Image Signing" above, signing is **on**: CI signs every image with `cosign sign --key`, and `build/03-patch-containers-policy.sh` makes the laptops require a valid signature (`sigstoreSigned` + `keyPath`, with `use-sigstore-attachments: true`) before `bootc upgrade` will pull.
+
+**Decision (2026-10-29): stay on cosign v2, matching greatlem0n-os.** Both repos use the identical v2 setup on purpose, so there is one signing method to maintain. `cosign-release` is pinned to the v2 line, and `.github/renovate.json5` holds `sigstore/cosign` at `<3`.
+
+**Why**: eaglesnest-os moved to cosign v3 on 2026-07-30 (PR #22). cosign v3 stores signatures as OCI-referrer `sigstore.bundle.v0.3` artifacts (tag `sha256-<digest>`, no `.sig`), which containers-image does not read. Every image from then until the v2 pin was rejected with "A signature was required, but no signature exists", so the laptops could not update past the 2026-07-30 image.
+
+**Upstream status (checked 2026-10-29)**: `ublue-os/bluefin` and `ublue-os/bluefin-lts` (what `Containerfile` FROM tracks) sign with cosign **v2.6.1** (the cosign-installer default). Bazzite uses v2.6.5. Aurora (v3.1.4) and `ublue-os/image-template` (v3.1.2, PR #243) run v3 only with `cosign sign --new-bundle-format=false --use-signing-config=false` (both flags are required) to keep the legacy `.sig` format. `projectbluefin/bluefin` and `projectbluefin/bluefin-lts` are now **archived**; Bluefin development is back under `ublue-os`. Native bundle support on the verify side is still open upstream: [containers/container-libs#388](https://github.com/containers/container-libs/issues/388), [coreos/rpm-ostree#5509](https://github.com/coreos/rpm-ostree/issues/5509). Revisit v3 when those ship in Fedora.
+
+**Before any cosign change**, test the real verification path with the repo's own policy and key:
+
+```bash
+# policy.json: {"default":[{"type":"reject"}],"transports":{"docker":{"ghcr.io/isaiahaguilera/eaglesnest-os":[{"type":"sigstoreSigned","keyPath":"<repo>/system_files/shared/etc/pki/containers/eaglesnest-os.pub","signedIdentity":{"type":"matchRepository"}}]},"dir":{"":[{"type":"insecureAcceptAnything"}]}}}
+skopeo copy --policy policy.json --registries.d system_files/shared/etc/containers/registries.d \
+  docker://ghcr.io/isaiahaguilera/eaglesnest-os:stable dir:/tmp/sigtest
+```
+
+Passing `cosign verify` alone is **not** enough: it accepts v3 bundles that the laptops reject.
+
 ## Other Rules that are Important to the Maintainers
 
 - Ensure that [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/#specification) are used and enforced for every commit and pull request title.
 - Always be surgical with the least amount of code, the project strives to be easy to maintain.
+- Mirror every agent memory into the "Maintainer Notes" section of this file and keep the two in sync.
 
 ## Attribution Requirements
 
@@ -1012,6 +1059,6 @@ Assisted-by: Claude Sonnet 4.5 via Claude Code
 
 ---
 
-**Last Updated**: 2026-01-01
+**Last Updated**: 2026-10-29
 **Image**: eaglesnest-os (Custom bootc image with system_files support and modular migration vision)
 **Based On**: Universal Blue finpilot template
