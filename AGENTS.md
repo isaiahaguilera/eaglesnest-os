@@ -1037,6 +1037,8 @@ skopeo copy --policy policy.json --registries.d system_files/shared/etc/containe
 
 Passing `cosign verify` alone is **not** enough: it accepts v3 bundles that the laptops reject.
 
+CI runs this check automatically: the **"Verify signature with containers policy"** step in `.github/workflows/build.yml` (added 2026-10-29, identical in both repos) fails the build if the freshly pushed image would be rejected.
+
 ## Other Rules that are Important to the Maintainers
 
 - Ensure that [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/#specification) are used and enforced for every commit and pull request title.
